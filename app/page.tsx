@@ -5,6 +5,7 @@ import { Insight } from '@/components/sections/Insight'
 import { Solution } from '@/components/sections/Solution'
 import { AfterVideo } from '@/components/sections/AfterVideo'
 import { Impact } from '@/components/sections/Impact'
+import { Reflection } from '@/components/sections/Reflection'
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Solution />
       <AfterVideo />
       <Impact />
+      <Reflection />
     </main>
   )
 }
