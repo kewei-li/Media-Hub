@@ -6,6 +6,7 @@ import { Solution } from '@/components/sections/Solution'
 import { AfterVideo } from '@/components/sections/AfterVideo'
 import { Impact } from '@/components/sections/Impact'
 import { Reflection } from '@/components/sections/Reflection'
+import { Footer } from '@/components/sections/Footer'
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <AfterVideo />
       <Impact />
       <Reflection />
+      <Footer />
     </main>
   )
 }
