@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface AnimatedCounterProps {
@@ -12,33 +12,10 @@ interface AnimatedCounterProps {
 export function AnimatedCounter({ value, suffix = '', className = '' }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const [displayValue, setDisplayValue] = useState(1)
-  const [hasStarted, setHasStarted] = useState(false)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const hasStartedRef = useRef(false)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10)
-
-  const startAnimation = useCallback(() => {
-    if (hasStarted) return
-    setHasStarted(true)
-
-    let current = 1
-    const totalDuration = 2000
-    const steps = numericValue - 1
-    const interval = Math.max(totalDuration / steps, 50)
-
-    timerRef.current = setInterval(() => {
-      current += 1
-      if (current >= numericValue) {
-        setDisplayValue(numericValue)
-        if (timerRef.current) {
-          clearInterval(timerRef.current)
-          timerRef.current = null
-        }
-      } else {
-        setDisplayValue(current)
-      }
-    }, interval)
-  }, [numericValue, hasStarted])
 
   useEffect(() => {
     const element = ref.current
@@ -47,12 +24,30 @@ export function AnimatedCounter({ value, suffix = '', className = '' }: Animated
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasStarted) {
-            startAnimation()
+          if (entry.isIntersecting && !hasStartedRef.current) {
+            hasStartedRef.current = true
+
+            let current = 1
+            const totalDuration = 2000
+            const steps = numericValue - 1
+            const interval = Math.max(totalDuration / steps, 50)
+
+            timerRef.current = setInterval(() => {
+              current += 1
+              if (current >= numericValue) {
+                setDisplayValue(numericValue)
+                if (timerRef.current) {
+                  clearInterval(timerRef.current)
+                  timerRef.current = null
+                }
+              } else {
+                setDisplayValue(current)
+              }
+            }, interval)
           }
         })
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     )
 
     observer.observe(element)
@@ -63,7 +58,7 @@ export function AnimatedCounter({ value, suffix = '', className = '' }: Animated
         clearInterval(timerRef.current)
       }
     }
-  }, [startAnimation, hasStarted])
+  }, [numericValue])
 
   return (
     <span
