@@ -29,7 +29,7 @@ export function Problem() {
           </li>
           <li className="flex items-start gap-3">
             <span className="text-neutral-400 mt-1">•</span>
-            <span>Articles scattered across 20+ weather-related cards</span>
+            <span>Articles scattered across 8 weather-related cards</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="text-neutral-400 mt-1">•</span>
