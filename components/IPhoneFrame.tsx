@@ -11,6 +11,7 @@ export function IPhoneFrame({ videoSrc, caption }: IPhoneFrameProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -22,6 +23,11 @@ export function IPhoneFrame({ videoSrc, caption }: IPhoneFrameProps) {
         setIsPlaying(true)
       }
     }
+  }
+
+  const handleError = () => {
+    setHasError(true)
+    setIsLoaded(true)
   }
 
   return (
@@ -49,17 +55,25 @@ export function IPhoneFrame({ videoSrc, caption }: IPhoneFrameProps) {
                     <div className="w-8 h-8 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
                   </div>
                 )}
-                <video
-                  ref={videoRef}
-                  src={videoSrc}
-                  muted
-                  loop
-                  playsInline
-                  onLoadedData={() => setIsLoaded(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
-                    isLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                />
+                {hasError ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black">
+                    <p className="text-neutral-500 text-sm">Video unavailable</p>
+                  </div>
+                ) : (
+                  <video
+                    ref={videoRef}
+                    src={videoSrc}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    onLoadedData={() => setIsLoaded(true)}
+                    onError={handleError}
+                    className={`w-full h-full object-cover transition-opacity duration-500 ${
+                      isLoaded ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
+                )}
               </div>
             </div>
 
