@@ -1,7 +1,7 @@
 'use client'
 
 import { ScrollReveal } from '@/components/ScrollReveal'
-import { VideoPlayer } from '@/components/VideoPlayer'
+import { IPhoneFrame } from '@/components/IPhoneFrame'
 
 export function AfterVideo() {
   return (
@@ -12,9 +12,9 @@ export function AfterVideo() {
         </h3>
       </ScrollReveal>
 
-      <ScrollReveal delay={0.2} className="w-full max-w-5xl">
-        <VideoPlayer
-          src="/videos/after.mp4"
+      <ScrollReveal delay={0.2}>
+        <IPhoneFrame
+          videoSrc="/videos/after-new.mov"
           caption="One tap to all content—the Media Aggregation Center"
         />
       </ScrollReveal>
