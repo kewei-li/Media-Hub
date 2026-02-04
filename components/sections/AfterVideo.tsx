@@ -12,12 +12,21 @@ export function AfterVideo() {
         </h3>
       </ScrollReveal>
 
-      <ScrollReveal delay={0.2}>
-        <IPhoneFrame
-          videoSrc="/videos/after-new.mov"
-          caption="One tap to all content—the Media Aggregation Center"
-        />
-      </ScrollReveal>
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+        <ScrollReveal delay={0.2}>
+          <IPhoneFrame
+            videoSrc="/videos/after-new.mov"
+            caption="One tap to all content—the Media Aggregation Center"
+          />
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.4}>
+          <IPhoneFrame
+            videoSrc="/videos/after-new-2.mp4"
+            caption="Unified content experience"
+          />
+        </ScrollReveal>
+      </div>
     </section>
   )
 }
