@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { useInView, motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface AnimatedCounterProps {
   value: string
@@ -10,40 +10,60 @@ interface AnimatedCounterProps {
 }
 
 export function AnimatedCounter({ value, suffix = '', className = '' }: AnimatedCounterProps) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const ref = useRef<HTMLSpanElement>(null)
   const [displayValue, setDisplayValue] = useState(1)
   const [hasStarted, setHasStarted] = useState(false)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10)
 
-  useEffect(() => {
-    if (isInView && !hasStarted) {
-      setHasStarted(true)
-      let current = 1
+  const startAnimation = useCallback(() => {
+    if (hasStarted) return
+    setHasStarted(true)
 
-      // Calculate interval to make animation ~2 seconds total
-      const totalDuration = 2000
-      const interval = totalDuration / (numericValue - 1)
+    let current = 1
+    const totalDuration = 2000
+    const steps = numericValue - 1
+    const interval = Math.max(totalDuration / steps, 50)
 
-      const timer = setInterval(() => {
-        current += 1
-        if (current >= numericValue) {
-          setDisplayValue(numericValue)
-          clearInterval(timer)
-        } else {
-          setDisplayValue(current)
+    timerRef.current = setInterval(() => {
+      current += 1
+      if (current >= numericValue) {
+        setDisplayValue(numericValue)
+        if (timerRef.current) {
+          clearInterval(timerRef.current)
+          timerRef.current = null
         }
-      }, interval)
+      } else {
+        setDisplayValue(current)
+      }
+    }, interval)
+  }, [numericValue, hasStarted])
 
-      return () => clearInterval(timer)
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasStarted) {
+            startAnimation()
+          }
+        })
+      },
+      { threshold: 0.5 }
+    )
+
+    observer.observe(element)
+
+    return () => {
+      observer.disconnect()
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
     }
-  }, [isInView, numericValue, hasStarted])
-
-  // Format display based on suffix type
-  const formatDisplay = (num: number) => {
-    return num.toString()
-  }
+  }, [startAnimation, hasStarted])
 
   return (
     <span
@@ -58,11 +78,11 @@ export function AnimatedCounter({ value, suffix = '', className = '' }: Animated
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -30, opacity: 0 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
+            transition={{ duration: 0.12, ease: 'easeOut' }}
             className="inline-block text-right"
             style={{ minWidth: `${value.length}ch` }}
           >
-            {formatDisplay(displayValue)}
+            {displayValue}
           </motion.span>
         </AnimatePresence>
       </span>
