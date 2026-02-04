@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
-import { useInView } from 'framer-motion'
+import { useRef, useState } from 'react'
 
 interface IPhoneFrameProps {
   videoSrc: string
@@ -10,22 +9,23 @@ interface IPhoneFrameProps {
 
 export function IPhoneFrame({ videoSrc, caption }: IPhoneFrameProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const containerRef = useRef(null)
-  const isInView = useInView(containerRef, { margin: '-20%' })
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
 
-  useEffect(() => {
+  const togglePlay = () => {
     if (videoRef.current) {
-      if (isInView) {
-        videoRef.current.play().catch(() => {})
-      } else {
+      if (isPlaying) {
         videoRef.current.pause()
+        setIsPlaying(false)
+      } else {
+        videoRef.current.play().catch(() => {})
+        setIsPlaying(true)
       }
     }
-  }, [isInView])
+  }
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center">
+    <div className="flex flex-col items-center">
       {/* iPhone 17 Pro Frame */}
       <div className="relative">
         {/* Outer frame with titanium-like finish */}
@@ -60,6 +60,24 @@ export function IPhoneFrame({ videoSrc, caption }: IPhoneFrameProps) {
                     isLoaded ? 'opacity-100' : 'opacity-0'
                   }`}
                 />
+
+                {/* Play/Pause Button */}
+                <button
+                  onClick={togglePlay}
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 transition-all hover:bg-white/30 hover:scale-105 active:scale-95"
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                >
+                  {isPlaying ? (
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <rect x="6" y="4" width="4" height="16" rx="1" />
+                      <rect x="14" y="4" width="4" height="16" rx="1" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z" />
+                    </svg>
+                  )}
+                </button>
               </div>
             </div>
 
