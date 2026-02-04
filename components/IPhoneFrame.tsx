@@ -1,0 +1,88 @@
+'use client'
+
+import { useRef, useEffect, useState } from 'react'
+import { useInView } from 'framer-motion'
+
+interface IPhoneFrameProps {
+  videoSrc: string
+  caption?: string
+}
+
+export function IPhoneFrame({ videoSrc, caption }: IPhoneFrameProps) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const containerRef = useRef(null)
+  const isInView = useInView(containerRef, { margin: '-20%' })
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isInView) {
+        videoRef.current.play().catch(() => {})
+      } else {
+        videoRef.current.pause()
+      }
+    }
+  }, [isInView])
+
+  return (
+    <div ref={containerRef} className="flex flex-col items-center">
+      {/* iPhone 17 Pro Frame */}
+      <div className="relative">
+        {/* Outer frame with titanium-like finish */}
+        <div className="relative bg-gradient-to-b from-[#3a3a3c] via-[#2c2c2e] to-[#1c1c1e] rounded-[55px] p-[3px] shadow-2xl">
+          {/* Inner bezel */}
+          <div className="relative bg-black rounded-[52px] p-[12px]">
+            {/* Screen container */}
+            <div className="relative overflow-hidden rounded-[40px] bg-black">
+              {/* Dynamic Island */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20">
+                <div className="bg-black rounded-full w-[120px] h-[35px] mt-[10px] flex items-center justify-center">
+                  <div className="w-[10px] h-[10px] rounded-full bg-[#1a1a1a] mr-[8px]" />
+                  <div className="w-[8px] h-[8px] rounded-full bg-[#0a0a0a]" />
+                </div>
+              </div>
+
+              {/* Video Screen */}
+              <div className="relative w-[280px] h-[606px] md:w-[320px] md:h-[693px]">
+                {!isLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                    <div className="w-8 h-8 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+                <video
+                  ref={videoRef}
+                  src={videoSrc}
+                  muted
+                  loop
+                  playsInline
+                  onLoadedData={() => setIsLoaded(true)}
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${
+                    isLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Side buttons - Volume */}
+            <div className="absolute left-[-3px] top-[120px] w-[3px] h-[30px] bg-[#3a3a3c] rounded-l-sm" />
+            <div className="absolute left-[-3px] top-[160px] w-[3px] h-[60px] bg-[#3a3a3c] rounded-l-sm" />
+            <div className="absolute left-[-3px] top-[230px] w-[3px] h-[60px] bg-[#3a3a3c] rounded-l-sm" />
+
+            {/* Side button - Power */}
+            <div className="absolute right-[-3px] top-[180px] w-[3px] h-[80px] bg-[#3a3a3c] rounded-r-sm" />
+          </div>
+        </div>
+
+        {/* Subtle reflection */}
+        <div className="absolute inset-0 rounded-[55px] bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+      </div>
+
+      {/* Caption */}
+      {caption && (
+        <p className="text-center text-neutral-400 mt-8 text-sm">
+          {caption}
+        </p>
+      )}
+    </div>
+  )
+}

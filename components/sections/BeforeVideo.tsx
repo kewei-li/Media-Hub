@@ -1,7 +1,7 @@
 'use client'
 
 import { ScrollReveal } from '@/components/ScrollReveal'
-import { VideoPlayer } from '@/components/VideoPlayer'
+import { IPhoneFrame } from '@/components/IPhoneFrame'
 
 export function BeforeVideo() {
   return (
@@ -12,9 +12,9 @@ export function BeforeVideo() {
         </h3>
       </ScrollReveal>
 
-      <ScrollReveal delay={0.2} className="w-full max-w-5xl">
-        <VideoPlayer
-          src="/videos/before.mp4"
+      <ScrollReveal delay={0.2}>
+        <IPhoneFrame
+          videoSrc="/videos/before-old.mp4"
           caption="Content buried across 20+ cards in the Now Feed"
         />
       </ScrollReveal>
