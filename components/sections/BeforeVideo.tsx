@@ -12,12 +12,21 @@ export function BeforeVideo() {
         </h3>
       </ScrollReveal>
 
-      <ScrollReveal delay={0.2}>
-        <IPhoneFrame
-          videoSrc="/videos/before-old.mp4"
-          caption="Content buried across 20+ cards in the Now Feed"
-        />
-      </ScrollReveal>
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+        <ScrollReveal delay={0.2}>
+          <IPhoneFrame
+            videoSrc="/videos/before-old.mp4"
+            caption="Content buried across 20+ cards in the Now Feed"
+          />
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.4}>
+          <IPhoneFrame
+            videoSrc="/videos/before-old-2.mp4"
+            caption="Scattered content across multiple screens"
+          />
+        </ScrollReveal>
+      </div>
     </section>
   )
 }
